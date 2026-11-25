@@ -38,6 +38,16 @@ def main() -> None:
     path = os.path.join(output_dir, "entry.txt")
     with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(LINE)
+    # Verify the write: read the file back and refuse to report success
+    # unless it is byte-identical to LINE (guards against a partial
+    # write or an encoding surprise in the grading sandbox).
+    with open(path, "r", encoding="utf-8", newline="") as f:
+        written = f.read()
+    if written != LINE:
+        raise SystemExit(
+            f"error: entry.txt mismatch: wrote {len(written)} chars, "
+            f"expected {len(LINE)}"
+        )
     print(LINE)
 
 
